@@ -1,0 +1,86 @@
+{
+  "brand": "Rajya Desk",
+  "networks": [
+    {
+      "name": "rajya_desk",
+      "front_man": "rajya_desk_guide",
+      "hocon": "./rajya_desk.network.json",
+      "description": "Find the state government schemes of India you likely qualify for, see why, and plan how to apply.",
+      "tags": [
+        "agentified-website",
+        "government-schemes",
+        "india",
+        "eligibility"
+      ],
+      "sample_queries": [
+        "Which state schemes does this desk cover?",
+        "I am a woman aged 30 in Karnataka and nobody in my family pays income tax. What fits?",
+        "What should I answer next to decide the most schemes?",
+        "Add Gruha Lakshmi to my plan and tell me which documents to keep ready.",
+        "Check my application status for Ladki Bahin."
+      ]
+    }
+  ],
+  "llm_router": {
+    "base_url": "https://api.otari.ai/api/v1",
+    "mock": false,
+    "byok_router": "https://api.otari.ai/api/v1"
+  },
+  "allowed_peers": [],
+  "peer_policy": {
+    "mode": "closed",
+    "deny_origins": [],
+    "note": "Local agents and page-local actions only."
+  },
+  "agent_mcp": {
+    "protocol": "nsdeploy-agent-mcp/v1",
+    "network": "rajya_desk",
+    "front_man": "rajya_desk_guide",
+    "available": false,
+    "reason": "This is a static bundle; a public MCP facade requires an application host."
+  },
+  "theme": {
+    "primary": "#3b3a8f"
+  },
+  "linking": {
+    "protocol": "nsdeploy-link/v1",
+    "exports": [
+      {
+        "network": "rajya_desk",
+        "front_man": "rajya_desk_guide",
+        "aliases": [
+          "rajya_desk",
+          "rajya_desk_guide"
+        ],
+        "url": "rajya_desk"
+      }
+    ],
+    "imports": [],
+    "link_updates": {
+      "mode": "browser-local"
+    }
+  },
+  "deployment": {
+    "mode": "static",
+    "self_contained_runtime": true,
+    "browser_mock": false,
+    "direct_byok": true,
+    "direct_mcp_requires_cors": true,
+    "public_mcp_facade": false
+  },
+  "actions": {
+    "version": 1,
+    "module": "./site-actions.js",
+    "bridge": "./bridge/action-bridge.html",
+    "agentTools": [
+      "get_desk_state",
+      "check_eligibility",
+      "get_scheme_details",
+      "set_answers",
+      "ask_on_page",
+      "add_to_plan",
+      "remove_from_plan",
+      "erase_my_details"
+    ]
+  }
+}
