@@ -1,0 +1,163 @@
+[
+  {
+    "id": "ka-gruha-lakshmi",
+    "name": "Gruha Lakshmi (Karnataka)",
+    "category": "Women",
+    "benefit": "₹2,000 a month to the woman who heads the household",
+    "summary": "Monthly support for women heads of households in Karnataka.",
+    "rules": {"all": [
+      {"field": "state", "op": "eq", "value": "Karnataka", "label": "Lives in Karnataka"},
+      {"field": "gender", "op": "eq", "value": "female", "label": "The applicant is a woman"},
+      {"field": "incomeTaxPayer", "op": "eq", "value": false, "label": "Neither she nor her husband pays income tax"}
+    ]},
+    "documents": ["Ration card naming her as head of the family", "Aadhaar", "Bank account linked to Aadhaar"],
+    "howToApply": "Apply on the Seva Sindhu portal or at a Grama One, Karnataka One or Bangalore One centre.",
+    "caveat": "She must also be named as the head of the family on the ration card. This desk does not ask this, so check your card.",
+    "source": "https://sevasindhu.karnataka.gov.in/",
+    "reviewed": "2026-11"
+  },
+  {
+    "id": "mh-ladki-bahin",
+    "name": "Mukhyamantri Majhi Ladki Bahin (Maharashtra)",
+    "category": "Women",
+    "benefit": "₹1,500 a month",
+    "summary": "Monthly support for women aged 21 to 65 in Maharashtra from families earning ₹2.5 lakh a year or less.",
+    "rules": {"all": [
+      {"field": "state", "op": "eq", "value": "Maharashtra", "label": "Lives in Maharashtra"},
+      {"field": "gender", "op": "eq", "value": "female", "label": "The applicant is a woman"},
+      {"field": "age", "op": "between", "value": [21, 65], "label": "Aged 21 to 65"},
+      {"field": "annualIncome", "op": "lte", "value": 250000, "label": "Family income is ₹2.5 lakh a year or less"},
+      {"field": "incomeTaxPayer", "op": "eq", "value": false, "label": "No one in the family pays income tax"},
+      {"field": "govtEmployee", "op": "eq", "value": false, "label": "No one in the family is a government employee or pensioner"}
+    ]},
+    "documents": ["Aadhaar", "Domicile or birth certificate", "Income certificate or ration card", "Bank account"],
+    "howToApply": "Apply on the Ladki Bahin portal, or through an Anganwadi worker or Setu centre.",
+    "source": "https://ladakibahin.maharashtra.gov.in/",
+    "reviewed": "2026-11"
+  },
+  {
+    "id": "mp-ladli-behna",
+    "name": "Mukhyamantri Ladli Behna (Madhya Pradesh)",
+    "category": "Women",
+    "benefit": "A monthly payment of over ₹1,000 to the woman's bank account",
+    "summary": "Monthly support for married, widowed or separated women aged 21 to 60 in Madhya Pradesh.",
+    "rules": {"all": [
+      {"field": "state", "op": "eq", "value": "Madhya Pradesh", "label": "Lives in Madhya Pradesh"},
+      {"field": "gender", "op": "eq", "value": "female", "label": "The applicant is a woman"},
+      {"field": "maritalStatus", "op": "in", "value": ["married", "widowed", "separated"], "label": "Married, widowed, or separated"},
+      {"field": "age", "op": "between", "value": [21, 60], "label": "Aged 21 to 60"},
+      {"field": "annualIncome", "op": "lte", "value": 250000, "label": "Family income is ₹2.5 lakh a year or less"},
+      {"field": "incomeTaxPayer", "op": "eq", "value": false, "label": "No one in the family pays income tax"}
+    ]},
+    "documents": ["Samagra ID", "Aadhaar", "Bank account linked to Aadhaar"],
+    "howToApply": "Apply at the Gram Panchayat, ward office or a camp when registration is open.",
+    "source": "https://cmladlibahna.mp.gov.in/",
+    "reviewed": "2026-11"
+  },
+  {
+    "id": "tn-magalir-urimai",
+    "name": "Kalaignar Magalir Urimai Thogai (Tamil Nadu)",
+    "category": "Women",
+    "benefit": "₹1,000 a month to the woman who heads the family",
+    "summary": "Monthly rights grant for women heads of families in Tamil Nadu earning ₹2.5 lakh a year or less.",
+    "rules": {"all": [
+      {"field": "state", "op": "eq", "value": "Tamil Nadu", "label": "Lives in Tamil Nadu"},
+      {"field": "gender", "op": "eq", "value": "female", "label": "The applicant is a woman"},
+      {"field": "age", "op": "gte", "value": 21, "label": "Aged 21 or more"},
+      {"field": "annualIncome", "op": "lte", "value": 250000, "label": "Family income is ₹2.5 lakh a year or less"},
+      {"field": "incomeTaxPayer", "op": "eq", "value": false, "label": "No one in the family pays income tax"},
+      {"field": "govtEmployee", "op": "eq", "value": false, "label": "No one in the family is a government employee or pensioner"}
+    ]},
+    "documents": ["Family (ration) card", "Aadhaar", "Bank account", "Electricity bill"],
+    "howToApply": "Apply at the ration-shop camp or the e-Sevai centre when registration is open.",
+    "source": "https://kmut.tn.gov.in/",
+    "reviewed": "2026-11"
+  },
+  {
+    "id": "wb-lakshmir-bhandar",
+    "name": "Lakshmir Bhandar (West Bengal)",
+    "category": "Women",
+    "benefit": "A monthly payment to the woman's bank account, higher for SC and ST women",
+    "summary": "Monthly support for women aged 25 to 60 in West Bengal.",
+    "rules": {"all": [
+      {"field": "state", "op": "eq", "value": "West Bengal", "label": "Lives in West Bengal"},
+      {"field": "gender", "op": "eq", "value": "female", "label": "The applicant is a woman"},
+      {"field": "age", "op": "between", "value": [25, 60], "label": "Aged 25 to 60"},
+      {"field": "isGovtEmployee", "op": "eq", "value": false, "label": "Not a government employee or pensioner"}
+    ]},
+    "documents": ["Swasthya Sathi card", "Aadhaar", "Bank account", "Caste certificate, for SC and ST"],
+    "howToApply": "Apply at a Duare Sarkar camp or the block or municipal office.",
+    "source": "https://socialsecurity.wb.gov.in/",
+    "reviewed": "2026-11"
+  },
+  {
+    "id": "od-subhadra",
+    "name": "Subhadra Yojana (Odisha)",
+    "category": "Women",
+    "benefit": "₹10,000 a year in two instalments",
+    "summary": "Yearly support for women aged 21 to 60 in Odisha.",
+    "rules": {"all": [
+      {"field": "state", "op": "eq", "value": "Odisha", "label": "Lives in Odisha"},
+      {"field": "gender", "op": "eq", "value": "female", "label": "The applicant is a woman"},
+      {"field": "age", "op": "between", "value": [21, 60], "label": "Aged 21 to 60"},
+      {"field": "annualIncome", "op": "lte", "value": 250000, "label": "Family income is ₹2.5 lakh a year or less"},
+      {"field": "incomeTaxPayer", "op": "eq", "value": false, "label": "No one in the family pays income tax"},
+      {"field": "govtEmployee", "op": "eq", "value": false, "label": "No one in the family is a government employee or pensioner"}
+    ]},
+    "documents": ["Aadhaar", "Ration card", "Bank account linked to Aadhaar"],
+    "howToApply": "Apply on the Subhadra portal or at an Anganwadi centre, block office or Mo Seva Kendra.",
+    "source": "https://subhadra.odisha.gov.in/",
+    "reviewed": "2026-11"
+  },
+  {
+    "id": "jh-maiyan-samman",
+    "name": "Mukhyamantri Maiyan Samman (Jharkhand)",
+    "category": "Women",
+    "benefit": "A monthly payment to the woman's bank account",
+    "summary": "Monthly support for women aged 18 to 50 in Jharkhand.",
+    "rules": {"all": [
+      {"field": "state", "op": "eq", "value": "Jharkhand", "label": "Lives in Jharkhand"},
+      {"field": "gender", "op": "eq", "value": "female", "label": "The applicant is a woman"},
+      {"field": "age", "op": "between", "value": [18, 50], "label": "Aged 18 to 50"},
+      {"field": "incomeTaxPayer", "op": "eq", "value": false, "label": "No one in the family pays income tax"},
+      {"field": "govtEmployee", "op": "eq", "value": false, "label": "No one in the family is a government employee or pensioner"}
+    ]},
+    "documents": ["Aadhaar", "Ration card", "Bank account linked to Aadhaar"],
+    "howToApply": "Apply at the Panchayat or ward camp, or at a Pragya Kendra.",
+    "source": "https://mmmsy.jharkhand.gov.in/",
+    "reviewed": "2026-11"
+  },
+  {
+    "id": "kl-welfare-pension",
+    "name": "Social Security Pension for the elderly (Kerala)",
+    "category": "Pension",
+    "benefit": "A monthly welfare pension paid by the state",
+    "summary": "Pension for people aged 60 or more in Kerala from families earning ₹1 lakh a year or less.",
+    "rules": {"all": [
+      {"field": "state", "op": "eq", "value": "Kerala", "label": "Lives in Kerala"},
+      {"field": "age", "op": "gte", "value": 60, "label": "Aged 60 or more"},
+      {"field": "annualIncome", "op": "lte", "value": 100000, "label": "Family income is ₹1 lakh a year or less"},
+      {"field": "paysIncomeTax", "op": "eq", "value": false, "label": "Not an income-tax payer"},
+      {"field": "isGovtEmployee", "op": "eq", "value": false, "label": "Not a government pensioner"}
+    ]},
+    "documents": ["Aadhaar", "Age proof", "Income certificate", "Bank account"],
+    "howToApply": "Apply at your Grama Panchayat, municipality or corporation office.",
+    "source": "https://welfarepension.lsgkerala.gov.in/",
+    "reviewed": "2026-11"
+  },
+  {
+    "id": "tg-rythu-bharosa",
+    "name": "Rythu Bharosa (Telangana)",
+    "category": "Farming",
+    "benefit": "Investment support paid per acre of cultivable land each year",
+    "summary": "Crop investment support for farmers who own land in Telangana.",
+    "rules": {"all": [
+      {"field": "state", "op": "eq", "value": "Telangana", "label": "Lives in Telangana"},
+      {"field": "ownsFarmland", "op": "eq", "value": true, "label": "Owns cultivable farmland"}
+    ]},
+    "documents": ["Pattadar passbook", "Aadhaar", "Bank account"],
+    "howToApply": "Give your bank details to the Agriculture Extension Officer of your village cluster.",
+    "source": "https://rythubharosa.telangana.gov.in/",
+    "reviewed": "2026-11"
+  }
+]

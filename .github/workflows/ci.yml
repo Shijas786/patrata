@@ -1,0 +1,42 @@
+name: Build, test and publish
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SITE: https://shijas786.github.io/patrata
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build both desks
+        run: |
+          node tools/build.mjs rajya
+          node tools/build.mjs patrata --partner-network "${PARTNER_NETWORK:-$SITE/rajya/rajya_desk}" --partner-page "${PARTNER_PAGE:-$SITE/rajya/}"
+        env:
+          PARTNER_NETWORK: ${{ vars.PARTNER_NETWORK }}
+          PARTNER_PAGE: ${{ vars.PARTNER_PAGE }}
+      - name: Test
+        run: node --test "tests/*.test.mjs"
+      - name: Publish to the gh-pages branch
+        if: github.event_name == 'push'
+        run: |
+          mkdir site
+          cp -r dist/patrata/. site/
+          cp -r dist/rajya site/rajya
+          cd site
+          git init -q -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Publish ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" gh-pages

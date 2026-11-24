@@ -1,0 +1,19 @@
+{
+  "id": "rajya",
+  "brand": "Rajya Desk",
+  "devanagari": "राज्य डेस्क",
+  "title": "Rajya Desk — state government schemes you qualify for",
+  "tagline": "Find the state schemes you qualify for.",
+  "lede": "Pick your state and answer a few questions. Open rules decide, right here in your browser, and show you why.",
+  "scope": "9 state government schemes across 9 states of India",
+  "network": "rajya_desk",
+  "frontAgent": "rajya_desk_guide",
+  "storageKey": "rajya.v1",
+  "theme": {
+    "primary": "#3b3a8f",
+    "accent": "#a8431a"
+  },
+  "partner": null,
+  "greeting": "I can check which state schemes you likely qualify for, explain why, and build your document checklist.",
+  "assistantLine": "Ask in your own language. The assistant runs the same open rules as the page and explains each result."
+}

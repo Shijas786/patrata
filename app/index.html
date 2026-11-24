@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{title}}</title>
+  <meta name="description" content="{{tagline}} {{lede}}">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <style>:root { --brand: {{primary}}; --accent: {{accent}}; --ns-primary: {{primary}}; --ns-accent: {{accent}}; }</style>
+  <script type="module" src="script.js"></script>
+  <script type="module" src="site.js"></script>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="./"><span class="brand-mark" lang="hi">{{devanagari}}</span> <span class="brand-name">{{brand}}</span></a>
+    <nav>
+      <a href="#check">Check</a>
+      <a href="#assistant">Ask</a>
+      <a href="#open">Open rules</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>{{tagline}}</h1>
+      <p class="lede">{{lede}}</p>
+      <ul class="promises">
+        <li><strong>Private.</strong> Your answers stay in this browser. There is no server.</li>
+        <li><strong>Explained.</strong> Every result shows which condition you meet or miss.</li>
+        <li><strong>Open.</strong> The rules are public data that any site or agent can reuse.</li>
+      </ul>
+      <p class="scope">Covers {{scope}}.</p>
+    </section>
+
+    <section id="check" class="check" aria-labelledby="check-heading">
+      <div class="panel form-panel">
+        <div class="panel-head">
+          <h2 id="check-heading">Your answers</h2>
+          <span id="progress" class="progress"></span>
+        </div>
+        <p class="hint">Skip anything you like. Each answer sharpens the results at once. <a class="to-results" href="#results">See my schemes ↓</a></p>
+        <form id="questions" novalidate onsubmit="return false"></form>
+        <p id="form-status" role="status" class="form-status"></p>
+        <p class="form-foot"><button id="erase" type="button" class="quiet">Erase my answers</button> <a class="to-results" href="#results">See my schemes ↓</a></p>
+      </div>
+
+      <div id="results" class="panel results-panel" aria-live="polite">
+        <div class="panel-head">
+          <h2>Your schemes</h2>
+          <span id="summary" class="progress"></span>
+        </div>
+        <section class="verdict verdict-eligible">
+          <h3><span id="count-eligible" class="count">0</span> You likely qualify</h3>
+          <div id="list-eligible"></div>
+        </section>
+        <section class="verdict verdict-needs_info">
+          <h3><span id="count-needs_info" class="count">0</span> Need more answers</h3>
+          <div id="list-needs_info"></div>
+        </section>
+        <details class="verdict verdict-not_eligible">
+          <summary><h3><span id="count-not_eligible" class="count">0</span> Does not fit right now</h3></summary>
+          <div id="list-not_eligible"></div>
+        </details>
+        <p id="disclaimer" class="disclaimer"></p>
+      </div>
+    </section>
+
+    <section id="plan" class="panel plan" aria-labelledby="plan-heading" hidden>
+      <div class="panel-head">
+        <h2 id="plan-heading">My plan</h2>
+        <button id="print-plan" type="button" class="quiet">Print or save as PDF</button>
+      </div>
+      <div class="plan-grid">
+        <div>
+          <h3>Schemes to apply for</h3>
+          <ol id="plan-schemes"></ol>
+        </div>
+        <div>
+          <h3>Documents to keep ready</h3>
+          <ul id="plan-documents" class="checklist"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="assistant" class="assistant panel" aria-labelledby="assistant-heading">
+      <h2 id="assistant-heading">Ask {{brand}}</h2>
+      <p>{{assistantLine}}</p>
+      <p class="assistant-note">The assistant runs in your browser on the AI provider you choose below. It gets your messages and your answers in ranges (such as “₹1,80,000 to ₹2,50,000 a year”), never the exact figures. You confirm anything that cannot be undone, and any contact with another site, before it happens.</p>
+      <p id="assistant-status" role="status">Connecting the assistant… If this message stays, the assistant could not load. You can still use the page directly.</p>
+      <div id="agent-app">
+        <div data-ns-slot="header"></div>
+        <div class="assistant-panels">
+          <div data-ns-slot="chat"></div>
+          <div data-ns-slot="agents"></div>
+        </div>
+        <div data-ns-slot="settings"></div>
+      </div>
+    </section>
+
+    <section id="open" class="panel open" aria-labelledby="open-heading">
+      <h2 id="open-heading">Open by design</h2>
+      <div class="open-grid">
+        <div>
+          <h3>For people</h3>
+          <p>No account, no tracking, no server. Close the tab and nothing about you exists anywhere but this browser.</p>
+          {{partnerBlock}}
+        </div>
+        <div>
+          <h3>For agents and other sites</h3>
+          <p>This is an open agentic website. Any agent site can call its network, and its eligibility check runs in the caller's own browser.</p>
+          <ul class="files">
+            <li><a href="agent-manifest.json">agent-manifest.json</a> — who we are</li>
+            <li><a href="{{network}}.network.json">{{network}}.network.json</a> — the agent network</li>
+            <li><a href="schemes.json">schemes.json</a> — every rule, as open data</li>
+            <li><a href="links.json">links.json</a> — linked networks</li>
+          </ul>
+        </div>
+        <div>
+          <h3>For builders</h3>
+          <p>Run a desk for your state, district or NGO: write your schemes in the same rule format, and every other desk's agents can ask yours.</p>
+          <p><a href="{{repoUrl}}">Get the desk kit on GitHub ↗</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>{{brand}} is an independent, open-source guide. It is not a government website.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "id": "patrata",
+  "brand": "Patrata",
+  "devanagari": "पात्रता",
+  "title": "Patrata — find the government schemes you qualify for",
+  "tagline": "Find the government schemes you qualify for.",
+  "lede": "Answer a few questions. Open rules decide, right here in your browser, and show you why. No sign-up, no name, no ID number.",
+  "scope": "23 central government schemes of India",
+  "network": "patrata",
+  "frontAgent": "patrata_guide",
+  "storageKey": "patrata.v1",
+  "theme": {
+    "primary": "#0f5c4d",
+    "accent": "#b4540a"
+  },
+  "partner": {
+    "label": "Rajya Desk",
+    "what": "state government schemes",
+    "pageUrl": "__PARTNER_PAGE__"
+  },
+  "greeting": "I can check which central government schemes you likely qualify for, explain why, point you to the questions that matter most, and build your document checklist. For state schemes I can ask Rajya Desk, after you agree.",
+  "assistantLine": "Ask in your own language. The assistant runs the same open rules as the page, explains each result, and can ask the linked state desk after you agree."
+}
