@@ -19,5 +19,63 @@
     "pageUrl": "__PARTNER_PAGE__"
   },
   "greeting": "I can check which central government schemes you likely qualify for, explain why, point you to the questions that matter most, and build your document checklist. For state schemes I can ask Rajya Desk, after you agree.",
-  "assistantLine": "Ask in your own language. The assistant runs the same open rules as the page, explains each result, and can ask the linked state desk after you agree."
+  "assistantLine": "Ask in your own language. The assistant runs the same open rules as the page, explains each result, and can ask the linked state desk after you agree.",
+  "personas": [
+    {
+      "name": "Sunita, 34",
+      "line": "Sells vegetables from a cart in Pune",
+      "facts": {
+        "state": "Maharashtra",
+        "area": "urban",
+        "age": 34,
+        "gender": "female",
+        "annualIncome": 140000,
+        "category": "obc",
+        "occupation": "street_vendor",
+        "maritalStatus": "married",
+        "bplCard": true,
+        "hasBankAccount": true,
+        "hasLpg": false,
+        "ownsPuccaHouse": false
+      }
+    },
+    {
+      "name": "Ramesh, 52",
+      "line": "Farms one hectare near Hubballi",
+      "facts": {
+        "state": "Karnataka",
+        "area": "rural",
+        "age": 52,
+        "gender": "male",
+        "annualIncome": 110000,
+        "category": "general",
+        "occupation": "farmer",
+        "maritalStatus": "married",
+        "ownsFarmland": true,
+        "landHectares": 1,
+        "hasBankAccount": true,
+        "paysIncomeTax": false,
+        "incomeTaxPayer": false,
+        "govtEmployee": false
+      }
+    },
+    {
+      "name": "Meena, 26",
+      "line": "Expecting her first child in Ranchi",
+      "facts": {
+        "state": "Jharkhand",
+        "area": "urban",
+        "age": 26,
+        "gender": "female",
+        "annualIncome": 180000,
+        "category": "st",
+        "occupation": "homemaker",
+        "maritalStatus": "married",
+        "pregnantOrNewMother": true,
+        "bplCard": true,
+        "hasBankAccount": true,
+        "isGovtEmployee": false
+      }
+    }
+  ]
 }

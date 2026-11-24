@@ -15,5 +15,53 @@
   },
   "partner": null,
   "greeting": "I can check which state schemes you likely qualify for, explain why, and build your document checklist.",
-  "assistantLine": "Ask in your own language. The assistant runs the same open rules as the page and explains each result."
+  "assistantLine": "Ask in your own language. The assistant runs the same open rules as the page and explains each result.",
+  "personas": [
+    {
+      "name": "Lakshmi, 41",
+      "line": "Runs her household in Mysuru",
+      "facts": {
+        "state": "Karnataka",
+        "area": "urban",
+        "age": 41,
+        "gender": "female",
+        "annualIncome": 160000,
+        "occupation": "homemaker",
+        "maritalStatus": "married",
+        "bplCard": true,
+        "incomeTaxPayer": false,
+        "govtEmployee": false
+      }
+    },
+    {
+      "name": "Asha, 30",
+      "line": "Daily-wage worker in Nagpur",
+      "facts": {
+        "state": "Maharashtra",
+        "area": "urban",
+        "age": 30,
+        "gender": "female",
+        "annualIncome": 120000,
+        "occupation": "unorganised_worker",
+        "maritalStatus": "single",
+        "incomeTaxPayer": false,
+        "govtEmployee": false
+      }
+    },
+    {
+      "name": "Venkat, 47",
+      "line": "Farms two hectares in Warangal",
+      "facts": {
+        "state": "Telangana",
+        "area": "rural",
+        "age": 47,
+        "gender": "male",
+        "annualIncome": 200000,
+        "occupation": "farmer",
+        "maritalStatus": "married",
+        "ownsFarmland": true,
+        "landHectares": 2
+      }
+    }
+  ]
 }

@@ -7,14 +7,14 @@ Challenge: [Open Agentic Web Challenge](https://cognizant-agenticweb.devpost.com
 | Field | Value |
 |---|---|
 | Project name | Patrata |
-| Tagline | Find the government schemes you qualify for. Open rules decide in your browser; agents explain. |
+| Tagline | A welfare office that never sees you: 23 Indian schemes checked in your browser, each one a petal that lights up as you answer. |
 | Live site | https://shijas786.github.io/patrata/ |
 | Second site | https://shijas786.github.io/patrata/rajya/ |
 | Network JSON | https://shijas786.github.io/patrata/patrata.network.json |
 | Manifest | https://shijas786.github.io/patrata/agent-manifest.json |
 | Repository | https://github.com/Shijas786/patrata |
 | Built with | HTML, CSS, JavaScript (ES modules), Open Agentic Web runtime (agentify-website skill), HOCON agent networks, GitHub Actions, GitHub Pages |
-| Screenshots | `docs/screenshots/01` to `05` |
+| Screenshots | `docs/screenshots/01` to `07`, captions below; use `01-hero.png` as the cover |
 | Video | Public YouTube link, under 2 minutes (script below) |
 
 ## Description
@@ -54,18 +54,65 @@ There is no server. Answers are saved only in the browser. The site never asks f
 number or an address. The assistant's state tool returns ages, incomes and land sizes as ranges. The assistant does
 send the visitor's messages and tool results to the AI provider the visitor chose; the page says so.
 
+### Who it is for
+Sunita sells vegetables from a cart in Pune. She likely qualifies for six central schemes, among them a free gas
+connection, a working-capital loan and hospital cover. She does not know, and the person who offers to "check for
+her" wants her Aadhaar number and a fee. Sunita, Ramesh the farmer and Meena the new mother are the three sample
+people on the page: one click fills in their answers so a judge sees the whole product in ten seconds.
+
+### How it uses the Open Agentic Web
+- **Declarative network.** `patrata.hocon` defines a front agent and an application planner; the build resolves it
+  to `patrata.network.json`, validated before any model call.
+- **Actions, not scraping.** Eight `website_*` actions with JSON schemas; the page's own buttons call the same code.
+- **Peer network with consent.** Rajya Desk is a separate site with its own manifest and network. The visitor's
+  browser asks before the first call. The peer list is closed.
+- **Bring your own model.** OpenRouter, Otari or a pasted key. Nothing of ours sits between the visitor and the model.
+- **Deny by default.** The bridge shares three stateless reads. A peer cannot read or change the visitor's answers.
+- **Fails closed.** Invalid rules stop the build. Invalid answers are refused with a reason. Erasing needs a
+  confirmation.
+
+### Design
+One identity across both desks: editorial serif, the Devanagari wordmark, a dark stage and warm paper. The scheme
+wheel is the centre of the page: one petal for each scheme, amber while open, green when likely, dim when ruled
+out. Cards glide between groups when a verdict changes. Short synthesised tones mark an answer, a gained scheme and
+an erase; one switch turns them off. All motion stops for visitors who ask for reduced motion.
+
 ### Challenges
 Keeping the model out of the decision. Splitting "you" from "your family" in the rules. Making one kit serve
 several desks. Writing agent instructions short enough for small free models.
+
+### Accomplishments
+- A verdict that is the same every time, with every condition shown.
+- No server, no build dependencies, no personal identifiers.
+- Two independent sites from one kit, talking through the open protocol.
+- 16 automated tests, and a build that refuses bad rule data.
+
+### What we learned
+Agents are most useful around a decision, not inside it: collecting answers, choosing the next question, explaining
+and planning. Declarative rules make that split easy to verify. Consent is clearer when the page shows what leaves
+the browser, in ranges, before it leaves.
 
 ### What's next
 More states and more schemes, with departments and NGOs running their own desks. Hindi and other Indian languages
 in the page. A shared field vocabulary so any desk's rules work with any other desk's answers.
 
+## Screenshot captions
+
+| File | Caption |
+|---|---|
+| `01-hero.png` | The scheme wheel: one petal for each scheme, green when you likely qualify. |
+| `02-results.png` | Sunita's answers fill in and six schemes move to "You likely qualify". |
+| `03-conditions.png` | Every result shows each condition as met, not met or not known yet. |
+| `04-plan-assistant.png` | One merged document checklist, and the assistant on your own AI provider. |
+| `05-sample-people.png` | Three sample people show the product in ten seconds. |
+| `06-rajya-desk.png` | Rajya Desk: a second, independent site from the same kit, for state schemes. |
+| `07-phone.png` | The same page on a phone. |
+
 ## Testing instructions for judges
 
 1. Open https://shijas786.github.io/patrata/. No account is needed.
-2. Answer: age 34, Woman, Town or city, Street vendor, BPL card Yes, LPG No. Three schemes show as likely.
+2. Select the sample person **Sunita, 34**. Her answers fill in and six schemes show as likely. Turn sound on to
+   hear each change.
 3. Open a card to see each condition. Select **Add to my plan** on two schemes and see one merged checklist.
 4. In **Ask Patrata**, open **AI model settings** and select **Connect with OpenRouter** (free model) or
    **Connect with Otari**, or paste a key.
@@ -82,7 +129,7 @@ The rules require the entrant to explain the project in their own voice. Record 
 | Time | On screen | Say |
 |---|---|---|
 | 0:00 | Patrata home page | "This is Patrata. It tells a person in India which government schemes they qualify for, without taking their data." |
-| 0:10 | Fill six answers; results move | "I answer a few questions. Open rules run in my browser. There is no server and no sign-up." |
+| 0:10 | Select Sunita; answers fill, petals turn green (sound on) | "Meet Sunita, a street vendor. As her answers fill in, open rules run in my browser. There is no server and no sign-up." |
 | 0:30 | Open the Ujjwala card | "Every result shows why: each condition is met, not met, or not known yet. The model never decides." |
 | 0:45 | Add two schemes to the plan | "My plan merges the documents I need into one checklist." |
 | 0:55 | Assistant: "What should I answer next?" | "The assistant runs on my own AI key. It uses the same operations as the page and points me to the questions that matter." |

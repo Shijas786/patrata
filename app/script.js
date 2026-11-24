@@ -2,6 +2,7 @@
 // buttons and the assistant's actions (site-actions.js) both call.
 import { DESK, SCHEMES } from "./js/desk-data.js";
 import { Desk } from "./js/desk.js";
+import { Effects } from "./js/effects.js";
 import { Fields } from "./js/fields.js";
 
 /**
@@ -9,6 +10,9 @@ import { Fields } from "./js/fields.js";
  */
 export class Page {
   static DISCLAIMER = "This is a guide, not a decision. Rules are summarised from official guidelines and can change; the department that runs a scheme decides. Always confirm on the scheme's official page before you apply.";
+
+  // Questions with this many choices or fewer show buttons, not a list.
+  static CHIP_LIMIT = 6;
 
   static VERDICTS = {
     eligible: {title: "You likely qualify", empty: "Nothing yet. Answer a few more questions."},
@@ -24,6 +28,20 @@ export class Page {
     this.desk = desk;
     this.root = root;
     this.highlighted = [];
+    this.fx = root ? new Effects(root, desk.storage, `${desk.config.storageKey}.sound`) : null;
+    // The likely schemes at the last draw, to sound and mark what changed.
+    this.likely = null;
+    // Counts sample fills and erases, so a fill in progress stops when either happens.
+    this.run = 0;
+  }
+
+  /**
+   * Choose how to scroll.
+   *
+   * :return: "auto" when the visitor prefers reduced motion or there is no page, else "smooth".
+   */
+  scrolling() {
+    return this.fx && !this.fx.still ? "smooth" : "auto";
   }
 
   /**
@@ -135,7 +153,7 @@ export class Page {
     this.render();
     const first = this.find(`#q-${fields[0]}`);
     if (first && first.scrollIntoView) {
-      first.scrollIntoView({behavior: "smooth", block: "center"});
+      first.scrollIntoView({behavior: this.scrolling(), block: "center"});
     }
     return {ok: true, highlighted: questions, note: "The questions are marked on the page. The visitor answers there; read the state again after they do."};
   }
@@ -184,10 +202,14 @@ export class Page {
    */
   eraseMyDetails() {
     const result = this.desk.erase();
+    this.run += 1;
     if (result.ok) {
       this.clearHighlights();
       this.render();
       this.say("Your answers and plan were erased from this browser.");
+      if (this.fx) {
+        this.fx.sweep();
+      }
     }
     return result;
   }
@@ -249,6 +271,9 @@ export class Page {
     label.textContent = field.question;
     label.htmlFor = `f-${field.id}`;
     let control = null;
+    const choices = field.type === "boolean"
+      ? [{value: "true", label: "Yes"}, {value: "false", label: "No"}]
+      : field.options;
     if (field.type === "number") {
       control = this.root.createElement("input");
       control.type = "number";
@@ -256,16 +281,45 @@ export class Page {
       control.max = field.max;
       control.step = field.integer ? "1" : "any";
       control.inputMode = field.integer ? "numeric" : "decimal";
+      control.placeholder = "Type a number";
+    } else if (choices.length <= Page.CHIP_LIMIT) {
+      // Few choices: one button each. Selecting the chosen one again clears the answer.
+      const label = this.root.createElement("span");
+      label.className = "q-label";
+      label.id = `l-${field.id}`;
+      label.textContent = field.question;
+      control = this.root.createElement("div");
+      control.className = "chips";
+      control.setAttribute("role", "group");
+      control.setAttribute("aria-labelledby", label.id);
+      for (const choice of choices) {
+        const chip = this.root.createElement("button");
+        chip.type = "button";
+        chip.className = "chip";
+        chip.dataset.value = choice.value;
+        chip.setAttribute("aria-pressed", "false");
+        chip.textContent = choice.label;
+        chip.addEventListener("click", () => {
+          const chosen = chip.getAttribute("aria-pressed") === "true";
+          this.answer(field.id, chosen ? "" : choice.value, chip);
+        });
+        control.append(chip);
+      }
+      control.id = `f-${field.id}`;
+      row.replaceChildren(label, control);
+      if (field.hint) {
+        const hint = this.root.createElement("small");
+        hint.textContent = field.hint;
+        row.append(hint);
+      }
+      return row;
     } else {
       control = this.root.createElement("select");
-      const options = field.type === "boolean"
-        ? [{value: "true", label: "Yes"}, {value: "false", label: "No"}]
-        : field.options;
       const blank = this.root.createElement("option");
       blank.value = "";
-      blank.textContent = "—";
+      blank.textContent = "Choose…";
       control.append(blank);
-      for (const option of options) {
+      for (const option of choices) {
         const element = this.root.createElement("option");
         element.value = option.value;
         element.textContent = option.label;
@@ -294,12 +348,33 @@ export class Page {
     if (!control.name) {
       return;
     }
-    const result = this.setAnswers({[control.name]: control.value});
+    const result = this.answer(control.name, control.value, control);
     control.setCustomValidity(result.ok ? "" : result.reason);
-    this.say(result.ok ? "" : result.reason);
     if (!result.ok) {
       control.reportValidity();
     }
+  }
+
+  /**
+   * Record one answer from the page's own controls, with its sound.
+   *
+   * :param id: The field id.
+   * :param value: The answer; an empty string clears it.
+   * :param control: The control the visitor used.
+   * :return: What setAnswers returned.
+   */
+  answer(id, value, control) {
+    const result = this.setAnswers({[id]: value});
+    this.say(result.ok ? "" : result.reason);
+    if (result.ok) {
+      this.fx.tick();
+    } else {
+      this.fx.refuse();
+    }
+    if (!result.ok && !this.fx.still) {
+      control.animate([{transform: "translateX(-6px)"}, {transform: "translateX(6px)"}, {transform: "none"}], {duration: 240});
+    }
+    return result;
   }
 
   /**
@@ -314,16 +389,24 @@ export class Page {
       const value = this.desk.facts[field.id];
       const text = value === undefined ? "" : String(value);
       // Never overwrite what the visitor is typing.
-      if (control && control !== this.root.activeElement && control.value !== text) {
+      if (control && control.classList.contains("chips")) {
+        for (const chip of control.children) {
+          chip.setAttribute("aria-pressed", String(chip.dataset.value === text));
+        }
+      } else if (control && control !== this.root.activeElement && control.value !== text) {
         control.value = text;
       }
       const row = this.find(`#q-${field.id}`);
       if (row) {
         row.classList.toggle("is-asked", this.highlighted.includes(field.id));
+        row.classList.toggle("is-answered", value !== undefined);
       }
     }
     const answered = Object.keys(this.desk.facts).length;
     this.find("#progress").textContent = `${answered} of ${Fields.LIST.length} answered`;
+    const share = `${Math.round((answered / Fields.LIST.length) * 100)}%`;
+    this.find("#progress-bar").style.width = share;
+    this.find("#page-progress").style.width = share;
     this.find("#erase").disabled = !this.desk.checkErase().ok;
     this.renderResults();
     this.renderPlan();
@@ -342,10 +425,13 @@ export class Page {
     this.find("#summary").textContent = answered
       ? `${groups.eligible.length} likely fit · ${groups.needs_info.length} need an answer · ${groups.not_eligible.length} ruled out`
       : `Answer any question to begin. ${this.desk.schemes.length} schemes are waiting.`;
+    const scope = this.find("#results");
+    const seen = this.fx.capture(scope);
     for (const [verdict, results] of Object.entries(groups)) {
       const list = this.find(`#list-${verdict}`);
       list.replaceChildren();
-      this.find(`#count-${verdict}`).textContent = String(results.length);
+      this.fx.count(this.find(`#count-${verdict}`), results.length);
+      this.fx.count(this.find(`#hero-count-${verdict}`), results.length);
       if (!results.length) {
         const empty = this.root.createElement("p");
         empty.className = "empty";
@@ -355,6 +441,34 @@ export class Page {
       for (const result of results) {
         list.append(this.buildCard(result));
       }
+    }
+    this.fx.settle(scope, seen);
+    this.fx.paintWheel(check.results);
+    this.fx.count(this.find("#hero-eligible"), groups.eligible.length);
+    this.fx.count(this.find("#dock-eligible"), groups.eligible.length);
+    this.fx.count(this.find("#dock-open"), groups.needs_info.length);
+    this.celebrate(groups.eligible.map((result) => result.id));
+  }
+
+  /**
+   * Sound and mark the schemes that became likely, or were lost, since the last draw.
+   *
+   * :param likely: The ids of the schemes that are likely now.
+   */
+  celebrate(likely) {
+    const before = this.likely;
+    this.likely = likely;
+    // The first draw shows what was saved; nothing changed.
+    if (!before) {
+      return;
+    }
+    const gained = likely.filter((id) => !before.includes(id));
+    if (gained.length) {
+      this.fx.chime(gained.length);
+      this.fx.burst(this.find("#count-eligible"), "var(--ok)");
+      this.fx.burst(this.find("#hero-eligible"), "var(--ok)");
+    } else if (before.length > likely.length) {
+      this.fx.drop();
     }
   }
 
@@ -369,6 +483,7 @@ export class Page {
     const card = this.root.createElement("details");
     card.className = `card card-${result.verdict}`;
     card.id = `card-${scheme.id}`;
+    card.dataset.verdict = result.verdict;
     const summary = this.root.createElement("summary");
     const name = this.root.createElement("span");
     name.className = "card-name";
@@ -379,7 +494,16 @@ export class Page {
     const benefit = this.root.createElement("span");
     benefit.className = "card-benefit";
     benefit.textContent = scheme.benefit;
-    summary.append(name, tag, benefit);
+    // One segment per condition: met, not met or not known yet.
+    const meter = this.root.createElement("span");
+    meter.className = "meter";
+    meter.setAttribute("aria-hidden", "true");
+    for (const item of result.criteria) {
+      const segment = this.root.createElement("i");
+      segment.className = `segment-${item.outcome}`;
+      meter.append(segment);
+    }
+    summary.append(name, tag, benefit, meter);
     card.append(summary);
 
     const why = this.root.createElement("ul");
@@ -387,8 +511,9 @@ export class Page {
     for (const item of result.criteria) {
       const line = this.root.createElement("li");
       line.className = `criterion criterion-${item.outcome}`;
-      const mark = {pass: "✓", fail: "✕", unknown: "?"}[item.outcome];
-      line.textContent = `${mark} ${item.label}`;
+      const mark = this.root.createElement("b");
+      mark.textContent = {pass: "✓", fail: "✕", unknown: "?"}[item.outcome];
+      line.append(mark, item.label);
       why.append(line);
     }
     card.append(why);
@@ -425,7 +550,11 @@ export class Page {
       const add = this.root.createElement("button");
       add.type = "button";
       add.textContent = planned ? "Remove from my plan" : "Add to my plan";
-      add.addEventListener("click", () => (planned ? this.removeFromPlan(scheme.id) : this.addToPlan(scheme.id)));
+      add.className = planned ? "is-planned" : "";
+      add.addEventListener("click", () => {
+        this.fx.pop();
+        return planned ? this.removeFromPlan(scheme.id) : this.addToPlan(scheme.id);
+      });
       actions.append(add);
     }
     const reviewed = this.root.createElement("small");
@@ -464,7 +593,10 @@ export class Page {
       const box = this.root.createElement("input");
       box.type = "checkbox";
       box.checked = view.ticked.includes(document);
-      box.addEventListener("change", () => this.desk.tickDocument(document, box.checked));
+      box.addEventListener("change", () => {
+        this.desk.tickDocument(document, box.checked);
+        this.fx.pop();
+      });
       const label = this.root.createElement("label");
       label.append(box, ` ${document}`);
       item.append(label);
@@ -473,10 +605,94 @@ export class Page {
   }
 
   /**
+   * Fill in a sample person's answers one by one, so the visitor sees the results move.
+   *
+   * :param persona: The sample person from the desk's config.
+   */
+  tryPersona(persona) {
+    const view = this.root.defaultView;
+    const saved = this.checkErase();
+    if (saved.ok) {
+      if (!view.confirm(`Replace your ${saved.answers} answers and your plan with ${persona.name}'s?`)) {
+        return;
+      }
+      this.eraseMyDetails();
+    }
+    this.find("#check").scrollIntoView({behavior: this.scrolling(), block: "start"});
+    const entries = Object.entries(persona.facts);
+    this.run += 1;
+    const run = this.run;
+    const next = (index) => {
+      // The visitor erased, or started another sample.
+      if (run !== this.run) {
+        return;
+      }
+      if (index >= entries.length) {
+        this.say(`These are ${persona.name}'s answers, a sample person. Select “Erase my answers” before you enter your own.`);
+        return;
+      }
+      const [id, value] = entries[index];
+      const control = this.find(`#f-${id}`);
+      this.answer(id, String(value), control);
+      const row = this.find(`#q-${id}`);
+      if (row && this.root.defaultView.innerWidth > 860) {
+        row.scrollIntoView({behavior: this.scrolling(), block: "nearest"});
+      }
+      view.setTimeout(() => next(index + 1), 260);
+    };
+    view.setTimeout(() => next(0), 500);
+  }
+
+  /**
+   * Draw the sample people.
+   */
+  buildPersonas() {
+    const list = this.find("#personas");
+    for (const persona of this.desk.config.personas || []) {
+      const button = this.root.createElement("button");
+      button.type = "button";
+      button.className = "persona";
+      const face = this.root.createElement("span");
+      face.className = "persona-face";
+      face.textContent = persona.name[0];
+      const name = this.root.createElement("strong");
+      name.textContent = persona.name;
+      const line = this.root.createElement("span");
+      line.textContent = persona.line;
+      const go = this.root.createElement("em");
+      go.textContent = "Try →";
+      button.append(face, name, line, go);
+      button.addEventListener("click", () => this.tryPersona(persona));
+      list.append(button);
+    }
+  }
+
+  /**
+   * Open one scheme's card and bring it into view.
+   *
+   * :param id: The scheme id.
+   */
+  showCard(id) {
+    const card = this.find(`#card-${id}`);
+    if (!card) {
+      return;
+    }
+    const group = card.closest("details.verdict");
+    if (group) {
+      group.open = true;
+    }
+    card.open = true;
+    card.scrollIntoView({behavior: this.scrolling(), block: "center"});
+    card.classList.add("is-moved");
+    this.root.defaultView.setTimeout(() => card.classList.remove("is-moved"), 1600);
+  }
+
+  /**
    * Wire the page's own buttons and draw everything.
    */
   start() {
     this.buildForm();
+    this.buildPersonas();
     this.find("#erase").addEventListener("click", () => {
       const check = this.checkErase();
       if (check.ok && this.root.defaultView.confirm(`Erase your ${check.answers} answers and your plan from this browser?`)) {
@@ -485,6 +701,17 @@ export class Page {
     });
     this.find("#print-plan").addEventListener("click", () => this.root.defaultView.print());
     this.find("#disclaimer").textContent = Page.DISCLAIMER;
+    this.fx.buildWheel(this.find("#wheel"), this.desk.schemes, (id) => this.showCard(id), (scheme) => {
+      this.find("#wheel-caption").textContent = scheme ? `${scheme.name} — ${scheme.benefit}` : "One petal for each scheme. Answer a question and watch them turn.";
+    });
+    const sound = this.find("#sound");
+    const showSound = (on) => {
+      sound.setAttribute("aria-pressed", String(on));
+      this.find("#sound-label").textContent = on ? "Sound on" : "Sound off";
+    };
+    showSound(!this.fx.muted);
+    sound.addEventListener("click", () => showSound(this.fx.toggleSound()));
+    this.fx.reveal();
     // Another tab changed or erased the answers: show what is saved now.
     this.root.defaultView.addEventListener("storage", () => {
       this.desk.load();

@@ -12,40 +12,76 @@
   <script type="module" src="site.js"></script>
 </head>
 <body>
-  <header class="top">
-    <a class="brand" href="./"><span class="brand-mark" lang="hi">{{devanagari}}</span> <span class="brand-name">{{brand}}</span></a>
-    <nav>
-      <a href="#check">Check</a>
-      <a href="#assistant">Ask</a>
-      <a href="#open">Open rules</a>
-    </nav>
-  </header>
+  <div class="page-progress" aria-hidden="true"><span id="page-progress"></span></div>
+  <div class="stage">
+    <header class="top">
+      <a class="brand" href="./"><span class="brand-mark" lang="hi">{{devanagari}}</span> <span class="brand-name">{{brand}}</span></a>
+      <nav>
+        <a href="#check">Check</a>
+        <a href="#assistant">Ask</a>
+        <a href="#open">Open rules</a>
+        <button id="sound" type="button" class="sound" aria-pressed="true" title="Turn sound on or off"><span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i></span><span id="sound-label">Sound on</span></button>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <span class="hero-word" lang="hi" aria-hidden="true">{{devanagari}}</span>
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="pulse" aria-hidden="true"></span> Open agentic website · runs in your browser</p>
+        <h1>{{tagline}}</h1>
+        <p class="lede">{{lede}}</p>
+        <p class="hero-actions">
+          <a class="cta" href="#check">Check my schemes <span aria-hidden="true">→</span></a>
+          <a class="ghost" href="#assistant">or ask the assistant</a>
+        </p>
+        <ul class="promises">
+          <li><strong>Private</strong> Your answers stay in this browser. There is no server.</li>
+          <li><strong>Explained</strong> Every result shows which condition you meet or miss.</li>
+          <li><strong>Open</strong> The rules are public data any site or agent can reuse.</li>
+        </ul>
+      </div>
+      <div class="hero-wheel">
+        <div class="wheel-frame">
+          <svg id="wheel" viewBox="-200 -200 400 400" aria-hidden="true"></svg>
+          <div class="wheel-core">
+            <span id="hero-eligible" class="wheel-number">0</span>
+            <span class="wheel-label">likely for you</span>
+          </div>
+        </div>
+        <p id="wheel-caption" class="wheel-caption">One petal for each scheme. Answer a question and watch them turn.</p>
+        <ul class="legend" aria-label="Covers {{scope}}">
+          <li class="legend-eligible"><b id="hero-count-eligible">0</b> likely</li>
+          <li class="legend-needs_info"><b id="hero-count-needs_info">0</b> open</li>
+          <li class="legend-not_eligible"><b id="hero-count-not_eligible">0</b> ruled out</li>
+        </ul>
+      </div>
+    </section>
+    <p class="scope">Covers {{scope}}.</p>
+  </div>
 
   <main>
-    <section class="hero">
-      <h1>{{tagline}}</h1>
-      <p class="lede">{{lede}}</p>
-      <ul class="promises">
-        <li><strong>Private.</strong> Your answers stay in this browser. There is no server.</li>
-        <li><strong>Explained.</strong> Every result shows which condition you meet or miss.</li>
-        <li><strong>Open.</strong> The rules are public data that any site or agent can reuse.</li>
-      </ul>
-      <p class="scope">Covers {{scope}}.</p>
+    <section class="personas" aria-labelledby="personas-heading" data-reveal>
+      <div>
+        <h2 id="personas-heading">See it work in ten seconds</h2>
+        <p>Pick a sample person. Their answers fill in one by one and the schemes sort themselves. These people are made up. Erase their answers before you enter your own.</p>
+      </div>
+      <div id="personas" class="persona-list"></div>
     </section>
 
     <section id="check" class="check" aria-labelledby="check-heading">
-      <div class="panel form-panel">
+      <div class="panel form-panel" data-reveal>
         <div class="panel-head">
           <h2 id="check-heading">Your answers</h2>
           <span id="progress" class="progress"></span>
         </div>
+        <div class="bar" aria-hidden="true"><span id="progress-bar"></span></div>
         <p class="hint">Skip anything you like. Each answer sharpens the results at once. <a class="to-results" href="#results">See my schemes ↓</a></p>
         <form id="questions" novalidate onsubmit="return false"></form>
         <p id="form-status" role="status" class="form-status"></p>
         <p class="form-foot"><button id="erase" type="button" class="quiet">Erase my answers</button> <a class="to-results" href="#results">See my schemes ↓</a></p>
       </div>
 
-      <div id="results" class="panel results-panel" aria-live="polite">
+      <div id="results" class="panel results-panel" aria-live="polite" data-reveal>
         <div class="panel-head">
           <h2>Your schemes</h2>
           <span id="summary" class="progress"></span>
@@ -83,7 +119,7 @@
       </div>
     </section>
 
-    <section id="assistant" class="assistant panel" aria-labelledby="assistant-heading">
+    <section id="assistant" class="assistant panel" data-reveal aria-labelledby="assistant-heading">
       <h2 id="assistant-heading">Ask {{brand}}</h2>
       <p>{{assistantLine}}</p>
       <p class="assistant-note">The assistant runs in your browser on the AI provider you choose below. It gets your messages and your answers in ranges (such as “₹1,80,000 to ₹2,50,000 a year”), never the exact figures. You confirm anything that cannot be undone, and any contact with another site, before it happens.</p>
@@ -98,7 +134,7 @@
       </div>
     </section>
 
-    <section id="open" class="panel open" aria-labelledby="open-heading">
+    <section id="open" class="panel open" data-reveal aria-labelledby="open-heading">
       <h2 id="open-heading">Open by design</h2>
       <div class="open-grid">
         <div>
@@ -124,6 +160,8 @@
       </div>
     </section>
   </main>
+
+  <a id="dock" class="dock" href="#results"><b id="dock-eligible">0</b> likely · <b id="dock-open">0</b> open <span aria-hidden="true">↓</span></a>
 
   <footer>
     <p>{{brand}} is an independent, open-source guide. It is not a government website.</p>
