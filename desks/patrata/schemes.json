@@ -27,7 +27,7 @@
       {"field": "landHectares", "op": "lte", "value": 2, "label": "The land is 2 hectares or less"},
       {"field": "age", "op": "between", "value": [18, 40], "label": "Aged 18 to 40 when joining"},
       {"field": "epfMember", "op": "eq", "value": false, "label": "Not covered by EPF, ESIC or NPS"},
-      {"field": "incomeTaxPayer", "op": "eq", "value": false, "label": "Not an income-tax payer"}
+      {"field": "paysIncomeTax", "op": "eq", "value": false, "label": "Not an income-tax payer"}
     ]},
     "documents": ["Aadhaar", "Savings bank account or PM-KISAN account", "Land record"],
     "howToApply": "Enrol at a Common Service Centre or on the Maandhan portal.",
@@ -109,7 +109,7 @@
     "rules": {"all": [
       {"field": "age", "op": "between", "value": [18, 40], "label": "Aged 18 to 40 when joining"},
       {"field": "hasBankAccount", "op": "eq", "value": true, "label": "Has a bank or post-office savings account"},
-      {"field": "incomeTaxPayer", "op": "eq", "value": false, "label": "Not an income-tax payer"}
+      {"field": "paysIncomeTax", "op": "eq", "value": false, "label": "Not an income-tax payer"}
     ]},
     "documents": ["Bank account", "Aadhaar", "Mobile number"],
     "howToApply": "Fill the APY form at your bank or post office, or join through net banking.",
@@ -127,7 +127,7 @@
       {"field": "age", "op": "between", "value": [18, 40], "label": "Aged 18 to 40 when joining"},
       {"field": "annualIncome", "op": "lte", "value": 180000, "label": "Earns ₹15,000 a month or less"},
       {"field": "epfMember", "op": "eq", "value": false, "label": "Not covered by EPF, ESIC or NPS"},
-      {"field": "incomeTaxPayer", "op": "eq", "value": false, "label": "Not an income-tax payer"}
+      {"field": "paysIncomeTax", "op": "eq", "value": false, "label": "Not an income-tax payer"}
     ]},
     "documents": ["Aadhaar", "Savings bank account or Jan Dhan account"],
     "howToApply": "Enrol at a Common Service Centre or on the Maandhan portal.",
@@ -303,7 +303,7 @@
     "rules": {"all": [
       {"field": "gender", "op": "eq", "value": "female", "label": "The applicant is a woman"},
       {"field": "pregnantOrNewMother", "op": "eq", "value": true, "label": "Pregnant, or a mother of a newborn"},
-      {"field": "govtEmployee", "op": "eq", "value": false, "label": "Not in regular government employment"}
+      {"field": "isGovtEmployee", "op": "eq", "value": false, "label": "Not in regular government employment"}
     ]},
     "documents": ["Aadhaar", "Mother and Child Protection card", "Bank account"],
     "howToApply": "Register at your Anganwadi centre or on the PMMVY portal.",

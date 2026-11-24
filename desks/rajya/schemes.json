@@ -7,11 +7,12 @@
     "summary": "Monthly support for women heads of households in Karnataka.",
     "rules": {"all": [
       {"field": "state", "op": "eq", "value": "Karnataka", "label": "Lives in Karnataka"},
-      {"field": "gender", "op": "eq", "value": "female", "label": "The applicant is a woman, named as head of the family on the ration card"},
+      {"field": "gender", "op": "eq", "value": "female", "label": "The applicant is a woman"},
       {"field": "incomeTaxPayer", "op": "eq", "value": false, "label": "Neither she nor her husband pays income tax"}
     ]},
     "documents": ["Ration card naming her as head of the family", "Aadhaar", "Bank account linked to Aadhaar"],
     "howToApply": "Apply on the Seva Sindhu portal or at a Grama One, Karnataka One or Bangalore One centre.",
+    "caveat": "She must also be named as the head of the family on the ration card. This desk does not ask this, so check your card.",
     "source": "https://sevasindhu.karnataka.gov.in/",
     "reviewed": "2026-11"
   },
@@ -82,7 +83,7 @@
       {"field": "state", "op": "eq", "value": "West Bengal", "label": "Lives in West Bengal"},
       {"field": "gender", "op": "eq", "value": "female", "label": "The applicant is a woman"},
       {"field": "age", "op": "between", "value": [25, 60], "label": "Aged 25 to 60"},
-      {"field": "govtEmployee", "op": "eq", "value": false, "label": "Not a government employee or pensioner"}
+      {"field": "isGovtEmployee", "op": "eq", "value": false, "label": "Not a government employee or pensioner"}
     ]},
     "documents": ["Swasthya Sathi card", "Aadhaar", "Bank account", "Caste certificate, for SC and ST"],
     "howToApply": "Apply at a Duare Sarkar camp or the block or municipal office.",
@@ -136,8 +137,8 @@
       {"field": "state", "op": "eq", "value": "Kerala", "label": "Lives in Kerala"},
       {"field": "age", "op": "gte", "value": 60, "label": "Aged 60 or more"},
       {"field": "annualIncome", "op": "lte", "value": 100000, "label": "Family income is ₹1 lakh a year or less"},
-      {"field": "incomeTaxPayer", "op": "eq", "value": false, "label": "Not an income-tax payer"},
-      {"field": "govtEmployee", "op": "eq", "value": false, "label": "Not a government pensioner"}
+      {"field": "paysIncomeTax", "op": "eq", "value": false, "label": "Not an income-tax payer"},
+      {"field": "isGovtEmployee", "op": "eq", "value": false, "label": "Not a government pensioner"}
     ]},
     "documents": ["Aadhaar", "Age proof", "Income certificate", "Bank account"],
     "howToApply": "Apply at your Grama Panchayat, municipality or corporation office.",
