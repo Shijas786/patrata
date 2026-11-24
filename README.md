@@ -15,6 +15,8 @@ documents to keep ready and where to apply.
   kit, covers 9 state schemes. When a visitor asks Patrata about state schemes, its agent asks Rajya Desk's agent,
   after the visitor agrees. Rajya Desk's rules run in the visitor's browser on the facts in that one request.
 
+![Patrata results](docs/screenshots/02-patrata-results.png)
+
 ## Try it
 
 | | |
