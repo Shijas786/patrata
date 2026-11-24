@@ -31,6 +31,17 @@ export class Page {
     this.fx = root ? new Effects(root, desk.storage, `${desk.config.storageKey}.sound`) : null;
     // The likely schemes at the last draw, to sound and mark what changed.
     this.likely = null;
+    // Counts sample fills and erases, so a fill in progress stops when either happens.
+    this.run = 0;
+  }
+
+  /**
+   * Choose how to scroll.
+   *
+   * :return: "auto" when the visitor prefers reduced motion or there is no page, else "smooth".
+   */
+  scrolling() {
+    return this.fx && !this.fx.still ? "smooth" : "auto";
   }
 
   /**
@@ -142,7 +153,7 @@ export class Page {
     this.render();
     const first = this.find(`#q-${fields[0]}`);
     if (first && first.scrollIntoView) {
-      first.scrollIntoView({behavior: "smooth", block: "center"});
+      first.scrollIntoView({behavior: this.scrolling(), block: "center"});
     }
     return {ok: true, highlighted: questions, note: "The questions are marked on the page. The visitor answers there; read the state again after they do."};
   }
@@ -191,6 +202,7 @@ export class Page {
    */
   eraseMyDetails() {
     const result = this.desk.erase();
+    this.run += 1;
     if (result.ok) {
       this.clearHighlights();
       this.render();
@@ -358,6 +370,8 @@ export class Page {
       this.fx.tick();
     } else {
       this.fx.refuse();
+    }
+    if (!result.ok && !this.fx.still) {
       control.animate([{transform: "translateX(-6px)"}, {transform: "translateX(6px)"}, {transform: "none"}], {duration: 240});
     }
     return result;
@@ -604,11 +618,17 @@ export class Page {
       }
       this.eraseMyDetails();
     }
-    this.find("#check").scrollIntoView({behavior: "smooth", block: "start"});
+    this.find("#check").scrollIntoView({behavior: this.scrolling(), block: "start"});
     const entries = Object.entries(persona.facts);
+    this.run += 1;
+    const run = this.run;
     const next = (index) => {
+      // The visitor erased, or started another sample.
+      if (run !== this.run) {
+        return;
+      }
       if (index >= entries.length) {
-        this.say(`Showing ${persona.name}. Change any answer to make it yours.`);
+        this.say(`These are ${persona.name}'s answers, a sample person. Select “Erase my answers” before you enter your own.`);
         return;
       }
       const [id, value] = entries[index];
@@ -616,7 +636,7 @@ export class Page {
       this.answer(id, String(value), control);
       const row = this.find(`#q-${id}`);
       if (row && this.root.defaultView.innerWidth > 860) {
-        row.scrollIntoView({behavior: "smooth", block: "nearest"});
+        row.scrollIntoView({behavior: this.scrolling(), block: "nearest"});
       }
       view.setTimeout(() => next(index + 1), 260);
     };
@@ -662,7 +682,7 @@ export class Page {
       group.open = true;
     }
     card.open = true;
-    card.scrollIntoView({behavior: "smooth", block: "center"});
+    card.scrollIntoView({behavior: this.scrolling(), block: "center"});
     card.classList.add("is-moved");
     this.root.defaultView.setTimeout(() => card.classList.remove("is-moved"), 1600);
   }

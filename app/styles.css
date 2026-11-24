@@ -317,7 +317,7 @@ footer { text-align: center; color: var(--muted); padding: 24px 20px 90px; font-
   [data-reveal] { opacity: 1; transform: none; }
 }
 @media print {
-  .stage, .check, .assistant, .open, footer, #print-plan, .dock, .page-progress { display: none; }
+  .stage, .personas, .check, .assistant, .open, footer, #print-plan, .dock, .page-progress { display: none; }
   .panel { border: 0; box-shadow: none; }
 }
 
