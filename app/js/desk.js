@@ -19,6 +19,7 @@ export class Desk {
     this.storage = storage || null;
     this.facts = {};
     this.plan = [];
+    this.ticked = [];
     this.version = 0;
     this.load();
   }
@@ -30,6 +31,10 @@ export class Desk {
     if (!this.storage) {
       return;
     }
+    // Start from nothing, so answers erased in another tab do not come back.
+    this.facts = {};
+    this.plan = [];
+    this.ticked = [];
     try {
       const saved = JSON.parse(this.storage.getItem(this.config.storageKey) || "{}");
       const cleaned = Fields.cleanAll(saved.facts || {});
@@ -37,6 +42,7 @@ export class Desk {
         this.facts = Desk.withoutNulls(cleaned.facts);
       }
       this.plan = (saved.plan || []).filter((id) => this.byId[id]);
+      this.ticked = (saved.ticked || []).filter((name) => typeof name === "string");
     } catch (error) {
       console.error("Saved answers could not be read", error);
     }
@@ -47,7 +53,7 @@ export class Desk {
    */
   save() {
     if (this.storage) {
-      this.storage.setItem(this.config.storageKey, JSON.stringify({facts: this.facts, plan: this.plan}));
+      this.storage.setItem(this.config.storageKey, JSON.stringify({facts: this.facts, plan: this.plan, ticked: this.ticked}));
     }
   }
 
@@ -68,6 +74,7 @@ export class Desk {
    * :return: {ok: true, changed, version}, or {ok: false, reason, field}.
    */
   setFacts(raw) {
+    this.load();
     const cleaned = Fields.cleanAll(raw);
     if (!cleaned.ok) {
       return cleaned;
@@ -197,6 +204,7 @@ export class Desk {
    * :return: {ok: true, plan, version}, or {ok: false, reason}.
    */
   addToPlan(id) {
+    this.load();
     if (!this.byId[id]) {
       return {ok: false, reason: `This desk has no scheme "${id}".`, field: "id"};
     }
@@ -216,6 +224,7 @@ export class Desk {
    * :return: {ok: true, plan, version}, or {ok: false, reason}.
    */
   removeFromPlan(id) {
+    this.load();
     if (!this.plan.includes(id)) {
       return {ok: false, reason: "That scheme is not in the plan.", field: "id"};
     }
@@ -242,7 +251,22 @@ export class Desk {
         }
       }
     }
-    return {schemes: schemes, documents: documents};
+    return {schemes: schemes, documents: documents, ticked: this.ticked.filter((name) => documents.includes(name))};
+  }
+
+  /**
+   * Tick or untick a document on the plan's checklist.
+   *
+   * :param name: The document name.
+   * :param ticked: True when the visitor has the document ready.
+   */
+  tickDocument(name, ticked) {
+    this.load();
+    this.ticked = this.ticked.filter((entry) => entry !== name);
+    if (ticked) {
+      this.ticked.push(name);
+    }
+    this.save();
   }
 
   /**
@@ -251,6 +275,7 @@ export class Desk {
    * :return: {ok: true, answers, planned}, or {ok: false, reason} when nothing is saved.
    */
   checkErase() {
+    this.load();
     const answers = Object.keys(this.facts).length;
     if (!answers && !this.plan.length) {
       return {ok: false, reason: "There is nothing to erase: no answers and no plan are saved."};
@@ -270,6 +295,7 @@ export class Desk {
     }
     this.facts = {};
     this.plan = [];
+    this.ticked = [];
     this.version += 1;
     if (this.storage) {
       this.storage.removeItem(this.config.storageKey);

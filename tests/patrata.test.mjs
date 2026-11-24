@@ -168,6 +168,41 @@ class PatrataTest {
     assert.deepEqual(new Desk(config, schemes, storage).facts, {});
   }
 
+  static testEraseInAnotherTabStaysErased() {
+    const store = {};
+    const storage = {getItem: (key) => store[key] || null, setItem: (key, value) => { store[key] = value; }, removeItem: (key) => { delete store[key]; }};
+    const config = PatrataTest.json("desks", "patrata", "desk.json");
+    const schemes = PatrataTest.json("desks", "patrata", "schemes.json");
+    const first = new Desk(config, schemes, storage);
+    first.setFacts({age: 61, annualIncome: 90000});
+    first.addToPlan("pmuy");
+    const second = new Desk(config, schemes, storage);
+    assert.equal(first.erase().ok, true);
+    second.setFacts({gender: "male"});
+    assert.deepEqual(second.facts, {gender: "male"}, "Answers erased in one tab must not return from another.");
+    assert.deepEqual(second.plan, []);
+  }
+
+  static testChecklistTicksSurviveOtherEdits() {
+    const desk = PatrataTest.desk("patrata");
+    desk.addToPlan("pmuy");
+    const document = desk.planView().documents[0];
+    desk.tickDocument(document, true);
+    desk.setFacts({age: 40});
+    assert.deepEqual(desk.planView().ticked, [document]);
+    desk.tickDocument(document, false);
+    assert.deepEqual(desk.planView().ticked, []);
+  }
+
+  static testFamilyAnswersDoNotDecidePersonalRules() {
+    const desk = PatrataTest.desk("patrata");
+    const base = {age: 30, hasBankAccount: true, incomeTaxPayer: true, govtEmployee: true};
+    const family = RuleEngine.check(desk.byId.apy, base);
+    assert.notEqual(family.verdict, "not_eligible", "A relative's income tax must not rule out the applicant.");
+    assert.equal(RuleEngine.check(desk.byId.apy, {...base, paysIncomeTax: true}).verdict, "not_eligible");
+    assert.equal(RuleEngine.check(desk.byId["pm-kisan"], {ownsFarmland: true, incomeTaxPayer: true}).verdict, "not_eligible");
+  }
+
   static async testPageActions() {
     const actions = await PatrataTest.actions("dist/patrata/site-actions.js");
     const manifest = PatrataTest.json("dist", "patrata", "agent-manifest.json");
@@ -251,6 +286,9 @@ test("bad answers are refused and change nothing", PatrataTest.testBadAnswersCha
 test("the state summary gives ranges, not exact figures", PatrataTest.testStateSummaryHidesExactFigures);
 test("plan and erase follow their rules", PatrataTest.testPlanAndErase);
 test("answers survive a reload and broken storage is ignored", PatrataTest.testStorageRoundTrip);
+test("answers erased in another tab stay erased", PatrataTest.testEraseInAnotherTabStaysErased);
+test("checklist ticks survive other edits", PatrataTest.testChecklistTicksSurviveOtherEdits);
+test("family answers do not decide personal rules", PatrataTest.testFamilyAnswersDoNotDecidePersonalRules);
 test("page actions match the manifest and follow the page's rules", PatrataTest.testPageActions);
 test("the bridge shares only stateless reads", PatrataTest.testBridgeSharesOnlyReads);
 test("built networks are complete and peers are closed", PatrataTest.testBuiltNetworks);

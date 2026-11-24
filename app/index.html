@@ -39,13 +39,13 @@
           <h2 id="check-heading">Your answers</h2>
           <span id="progress" class="progress"></span>
         </div>
-        <p class="hint">Skip anything you like. Each answer sharpens the results at once.</p>
+        <p class="hint">Skip anything you like. Each answer sharpens the results at once. <a class="to-results" href="#results">See my schemes ↓</a></p>
         <form id="questions" novalidate onsubmit="return false"></form>
         <p id="form-status" role="status" class="form-status"></p>
-        <button id="erase" type="button" class="quiet">Erase my answers</button>
+        <p class="form-foot"><button id="erase" type="button" class="quiet">Erase my answers</button> <a class="to-results" href="#results">See my schemes ↓</a></p>
       </div>
 
-      <div class="panel results-panel" aria-live="polite">
+      <div id="results" class="panel results-panel" aria-live="polite">
         <div class="panel-head">
           <h2>Your schemes</h2>
           <span id="summary" class="progress"></span>
@@ -55,7 +55,7 @@
           <div id="list-eligible"></div>
         </section>
         <section class="verdict verdict-needs_info">
-          <h3><span id="count-needs_info" class="count">0</span> One or two answers away</h3>
+          <h3><span id="count-needs_info" class="count">0</span> Need more answers</h3>
           <div id="list-needs_info"></div>
         </section>
         <details class="verdict verdict-not_eligible">

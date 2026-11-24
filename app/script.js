@@ -12,7 +12,7 @@ export class Page {
 
   static VERDICTS = {
     eligible: {title: "You likely qualify", empty: "Nothing yet. Answer a few more questions."},
-    needs_info: {title: "One or two answers away", empty: "No scheme is waiting on an answer."},
+    needs_info: {title: "Need more answers", empty: "No scheme is waiting on an answer."},
     not_eligible: {title: "Does not fit right now", empty: "No scheme is ruled out."},
   };
 
@@ -341,7 +341,7 @@ export class Page {
     const answered = Object.keys(this.desk.facts).length;
     this.find("#summary").textContent = answered
       ? `${groups.eligible.length} likely fit · ${groups.needs_info.length} need an answer · ${groups.not_eligible.length} ruled out`
-      : `Start with any question on the left. ${this.desk.schemes.length} schemes are waiting.`;
+      : `Answer any question to begin. ${this.desk.schemes.length} schemes are waiting.`;
     for (const [verdict, results] of Object.entries(groups)) {
       const list = this.find(`#list-${verdict}`);
       list.replaceChildren();
@@ -463,6 +463,8 @@ export class Page {
       const item = this.root.createElement("li");
       const box = this.root.createElement("input");
       box.type = "checkbox";
+      box.checked = view.ticked.includes(document);
+      box.addEventListener("change", () => this.desk.tickDocument(document, box.checked));
       const label = this.root.createElement("label");
       label.append(box, ` ${document}`);
       item.append(label);
@@ -483,6 +485,11 @@ export class Page {
     });
     this.find("#print-plan").addEventListener("click", () => this.root.defaultView.print());
     this.find("#disclaimer").textContent = Page.DISCLAIMER;
+    // Another tab changed or erased the answers: show what is saved now.
+    this.root.defaultView.addEventListener("storage", () => {
+      this.desk.load();
+      this.render();
+    });
     this.render();
   }
 }
