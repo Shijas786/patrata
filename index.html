@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Patrata — find the government schemes you qualify for</title>
+  <meta name="description" content="Find the government schemes you qualify for. Answer a few questions. Open rules decide, right here in your browser, and show you why. No sign-up, no name, no ID number.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <style>:root { --brand: #0f5c4d; --accent: #b4540a; --ns-primary: #0f5c4d; --ns-accent: #b4540a; }</style>
+  <script type="module" src="script.js"></script>
+  <script type="module" src="site.js"></script>
+</head>
+<body>
+  <div class="page-progress" aria-hidden="true"><span id="page-progress"></span></div>
+  <div class="stage">
+    <header class="top">
+      <a class="brand" href="./"><span class="brand-mark" lang="hi">पात्रता</span> <span class="brand-name">Patrata</span></a>
+      <nav>
+        <a href="#check">Check</a>
+        <a href="#assistant">Ask</a>
+        <a href="#open">Open rules</a>
+        <button id="sound" type="button" class="sound" aria-pressed="true" title="Turn sound on or off"><span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i></span><span id="sound-label">Sound on</span></button>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <span class="hero-word" lang="hi" aria-hidden="true">पात्रता</span>
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="pulse" aria-hidden="true"></span> Open agentic website · runs in your browser</p>
+        <h1>Find the government schemes you qualify for.</h1>
+        <p class="lede">Answer a few questions. Open rules decide, right here in your browser, and show you why. No sign-up, no name, no ID number.</p>
+        <p class="hero-actions">
+          <a class="cta" href="#check">Check my schemes <span aria-hidden="true">→</span></a>
+          <a class="ghost" href="#assistant">or ask the assistant</a>
+        </p>
+        <ul class="promises">
+          <li><strong>Private</strong> Your answers stay in this browser. There is no server.</li>
+          <li><strong>Explained</strong> Every result shows which condition you meet or miss.</li>
+          <li><strong>Open</strong> The rules are public data any site or agent can reuse.</li>
+        </ul>
+      </div>
+      <div class="hero-wheel">
+        <div class="wheel-frame">
+          <svg id="wheel" viewBox="-200 -200 400 400" aria-hidden="true"></svg>
+          <div class="wheel-core">
+            <span id="hero-eligible" class="wheel-number">0</span>
+            <span class="wheel-label">likely for you</span>
+          </div>
+        </div>
+        <p id="wheel-caption" class="wheel-caption">One petal for each scheme. Answer a question and watch them turn.</p>
+        <ul class="legend" aria-label="Covers 23 central government schemes of India">
+          <li class="legend-eligible"><b id="hero-count-eligible">0</b> likely</li>
+          <li class="legend-needs_info"><b id="hero-count-needs_info">0</b> open</li>
+          <li class="legend-not_eligible"><b id="hero-count-not_eligible">0</b> ruled out</li>
+        </ul>
+      </div>
+    </section>
+    <p class="scope">Covers 23 central government schemes of India.</p>
+  </div>
+
+  <main>
+    <section class="personas" aria-labelledby="personas-heading" data-reveal>
+      <div>
+        <h2 id="personas-heading">See it work in ten seconds</h2>
+        <p>Pick a sample person. Their answers fill in one by one and the schemes sort themselves. These people are made up. Erase their answers before you enter your own.</p>
+      </div>
+      <div id="personas" class="persona-list"></div>
+    </section>
+
+    <section id="check" class="check" aria-labelledby="check-heading">
+      <div class="panel form-panel" data-reveal>
+        <div class="panel-head">
+          <h2 id="check-heading">Your answers</h2>
+          <span id="progress" class="progress"></span>
+        </div>
+        <div class="bar" aria-hidden="true"><span id="progress-bar"></span></div>
+        <p class="hint">Skip anything you like. Each answer sharpens the results at once. <a class="to-results" href="#results">See my schemes ↓</a></p>
+        <form id="questions" novalidate onsubmit="return false"></form>
+        <p id="form-status" role="status" class="form-status"></p>
+        <p class="form-foot"><button id="erase" type="button" class="quiet">Erase my answers</button> <a class="to-results" href="#results">See my schemes ↓</a></p>
+      </div>
+
+      <div id="results" class="panel results-panel" aria-live="polite" data-reveal>
+        <div class="panel-head">
+          <h2>Your schemes</h2>
+          <span id="summary" class="progress"></span>
+        </div>
+        <section class="verdict verdict-eligible">
+          <h3><span id="count-eligible" class="count">0</span> You likely qualify</h3>
+          <div id="list-eligible"></div>
+        </section>
+        <section class="verdict verdict-needs_info">
+          <h3><span id="count-needs_info" class="count">0</span> Need more answers</h3>
+          <div id="list-needs_info"></div>
+        </section>
+        <details class="verdict verdict-not_eligible">
+          <summary><h3><span id="count-not_eligible" class="count">0</span> Does not fit right now</h3></summary>
+          <div id="list-not_eligible"></div>
+        </details>
+        <p id="disclaimer" class="disclaimer"></p>
+      </div>
+    </section>
+
+    <section id="plan" class="panel plan" aria-labelledby="plan-heading" hidden>
+      <div class="panel-head">
+        <h2 id="plan-heading">My plan</h2>
+        <button id="print-plan" type="button" class="quiet">Print or save as PDF</button>
+      </div>
+      <div class="plan-grid">
+        <div>
+          <h3>Schemes to apply for</h3>
+          <ol id="plan-schemes"></ol>
+        </div>
+        <div>
+          <h3>Documents to keep ready</h3>
+          <ul id="plan-documents" class="checklist"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="assistant" class="assistant panel" data-reveal aria-labelledby="assistant-heading">
+      <h2 id="assistant-heading">Ask Patrata</h2>
+      <p>Ask in your own language. The assistant runs the same open rules as the page, explains each result, and can ask the linked state desk after you agree.</p>
+      <p class="assistant-note">The assistant runs in your browser on the AI provider you choose below. It gets your messages and your answers in ranges (such as “₹1,80,000 to ₹2,50,000 a year”), never the exact figures. You confirm anything that cannot be undone, and any contact with another site, before it happens.</p>
+      <p id="assistant-status" role="status">Connecting the assistant… If this message stays, the assistant could not load. You can still use the page directly.</p>
+      <div id="agent-app">
+        <div data-ns-slot="header"></div>
+        <div class="assistant-panels">
+          <div data-ns-slot="chat"></div>
+          <div data-ns-slot="agents"></div>
+        </div>
+        <div data-ns-slot="settings"></div>
+      </div>
+    </section>
+
+    <section id="open" class="panel open" data-reveal aria-labelledby="open-heading">
+      <h2 id="open-heading">Open by design</h2>
+      <div class="open-grid">
+        <div>
+          <h3>For people</h3>
+          <p>No account, no tracking, no server. Close the tab and nothing about you exists anywhere but this browser.</p>
+          <p>For state government schemes, visit <a id="partner-link" href="https://shijas786.github.io/patrata/rajya/">Rajya Desk</a>, or ask the assistant: it asks Rajya Desk for you, after you agree.</p>
+        </div>
+        <div>
+          <h3>For agents and other sites</h3>
+          <p>This is an open agentic website. Any agent site can call its network, and its eligibility check runs in the caller's own browser.</p>
+          <ul class="files">
+            <li><a href="agent-manifest.json">agent-manifest.json</a> — who we are</li>
+            <li><a href="patrata.network.json">patrata.network.json</a> — the agent network</li>
+            <li><a href="schemes.json">schemes.json</a> — every rule, as open data</li>
+            <li><a href="links.json">links.json</a> — linked networks</li>
+          </ul>
+        </div>
+        <div>
+          <h3>For builders</h3>
+          <p>Run a desk for your state, district or NGO: write your schemes in the same rule format, and every other desk's agents can ask yours.</p>
+          <p><a href="https://github.com/Shijas786/patrata">Get the desk kit on GitHub ↗</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <a id="dock" class="dock" href="#results"><b id="dock-eligible">0</b> likely · <b id="dock-open">0</b> open <span aria-hidden="true">↓</span></a>
+
+  <footer>
+    <p>Patrata is an independent, open-source guide. It is not a government website.</p>
+  </footer>
+</body>
+</html>

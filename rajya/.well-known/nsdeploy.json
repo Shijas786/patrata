@@ -1,0 +1,18 @@
+{
+  "protocol": "nsdeploy-link/v1",
+  "exports": [
+    {
+      "network": "rajya_desk",
+      "front_man": "rajya_desk_guide",
+      "aliases": [
+        "rajya_desk",
+        "rajya_desk_guide"
+      ],
+      "url": "rajya_desk"
+    }
+  ],
+  "imports": [],
+  "link_updates": {
+    "mode": "browser-local"
+  }
+}

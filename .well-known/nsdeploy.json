@@ -1,0 +1,18 @@
+{
+  "protocol": "nsdeploy-link/v1",
+  "exports": [
+    {
+      "network": "patrata",
+      "front_man": "patrata_guide",
+      "aliases": [
+        "patrata",
+        "patrata_guide"
+      ],
+      "url": "patrata"
+    }
+  ],
+  "imports": [],
+  "link_updates": {
+    "mode": "browser-local"
+  }
+}
